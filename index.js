@@ -17,6 +17,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 // definir un dominio para ejecutar peticiones 
 
+console.log("permitido "+process.env.FRONTEND_URL);
+
 const whitelist =[process.env.FRONTEND_URL]
 
 
@@ -25,7 +27,9 @@ console.log("hola munfo "+process.env.FRONTEND_URL);
 const corsOption={
     origin:(origin,callBack)=>
     {
-       // console.log(origin);
+
+
+        console.log("el origen "+origin);
         
         // revisar si la peticion proveniente del servidor esta en la whitelist
 
@@ -36,7 +40,7 @@ const corsOption={
             callBack(null,true)
         }else{
 
-            callBack(new Error('no permitido por cors'));
+            callBack(new Error('no permitido por los suoer cors'));
             
         }
     }
