@@ -1,6 +1,6 @@
 const express=require('express')
 
-const route=require('../Backend/routes')
+const route=require('./routes/index')
 const mongoose=require('mongoose')
 const bodyParser=require('body-parser')
 require('dotenv').config({path:'variables.env'})
