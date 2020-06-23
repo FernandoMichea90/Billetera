@@ -5,6 +5,7 @@ const bcrypt=require('bcrypt')
 
 
 exports.nuevoUsuario = async (req, res, next) => {
+   
     const diario = new Diario(req.body);
     diario.password=await bcrypt.hash(req.body.password,12)
 
@@ -25,7 +26,9 @@ exports.nuevoUsuario = async (req, res, next) => {
 }
 
 exports.autenticarUsuario=async(req,res,next)=>{
-const {correo,password}=req.body
+    console.log("paso por el Login ");
+    
+    const {correo,password}=req.body
 console.log(correo);
 try{
 const usuario=await Diario.findOne({correo})
@@ -74,6 +77,8 @@ if(!usuario)
 }catch(error)
 {
     console.log(error);
+
+
     
 }
 

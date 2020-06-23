@@ -16,11 +16,17 @@ mongoose.connect(process.env.DB_URL,
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 // definir un dominio para ejecutar peticiones 
+
 const whitelist =[process.env.FRONTEND_URL]
+
+
+console.log("hola munfo "+process.env.FRONTEND_URL);
 
 const corsOption={
     origin:(origin,callBack)=>
     {
+       // console.log(origin);
+        
         // revisar si la peticion proveniente del servidor esta en la whitelist
 
         const existe =whitelist.some(dominio=>dominio===origin);
@@ -47,6 +53,9 @@ app.listen(port,host,()=>
 {
 
     console.log("El servidor esta funcionando");
+    console.log(process.env.DB_URL);
+    console.log(process.env.FRONTEND_URL);
+
     
 
 })

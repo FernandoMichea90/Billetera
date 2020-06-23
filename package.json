@@ -4,8 +4,9 @@
   "description": "billetera",
   "main": "index.js",
   "scripts": {
-    "desarrollo": "nodemon ./index.js",
-    "start": "node ./index.js"
+    "start": "node ./index.js",
+
+    "desarrollo": "nodemon ./index.js"
   },
   "author": "Fernando Michea",
   "license": "ISC",
