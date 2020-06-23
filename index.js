@@ -55,6 +55,9 @@ app.listen(port,host,()=>
     console.log("El servidor esta funcionando");
     console.log(process.env.DB_URL);
     console.log(process.env.FRONTEND_URL);
+    console.log("base de datos "+process.env.DB_URL);
+
+
 
     
 
