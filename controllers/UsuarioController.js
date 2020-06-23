@@ -1,6 +1,6 @@
 const Diario = require('../models/Usuario');
 const jwt =require('jsonwebtoken')
-const bcrypt=require('brcypt')
+const bcrypt=require('bcrypt')
 
 
 
