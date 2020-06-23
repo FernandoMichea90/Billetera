@@ -1,4 +1,4 @@
-const express=require('express')
+const express=require('../node_modules/express')
 const router=express.Router();
 const usuarioController=require('../controllers/UsuarioController')
 const TipoGastosController=require('../controllers/TipoGastosController')
