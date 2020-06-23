@@ -33,6 +33,8 @@ console.log(correo);
 try{
  console.log("antes de la consulta a la base de dato ");
     
+ console.log("muetsrame el correo "+correo);
+ 
 const usuario=await Diario.findOne({correo})
 console.log("el usuario"+usuario);
 
