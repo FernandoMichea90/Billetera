@@ -1,7 +1,10 @@
 const Diario = require('../models/Gasto');
 const Tipo = require('../models/Tipogastos');
 
+var moment =require('moment')
 var mongoose = require('mongoose')
+var ObjectId = require('mongodb').ObjectID;
+
 // agrega un nuevo cliente
 exports.nuevoDiario = async (req, res, next) => {
     const diario = new Diario(req.body);
@@ -19,13 +22,10 @@ exports.nuevoDiario = async (req, res, next) => {
     }
 }
 
-
 exports.mostrarDiario = async (req, res, next) => {
-    console.log("paso por aca");
     
     const diario = await  Diario.findById(req.params.idIng);
-    console.log("muestrame");
-    console.log(diario);
+   
     
     
     if(!diario) {
@@ -35,14 +35,11 @@ exports.mostrarDiario = async (req, res, next) => {
     // Mostrar el cliente
     res.json(diario);
 }
-
-
-
 exports.listarDiarios=async(req,res,next)=>
 {
 
     try {
-        const diario = await Diario.find({});
+        const diario = await Diario.find({}).sort({fecha:-1});
         
     //const diario = await Diario.findById({_id});
 
@@ -73,7 +70,6 @@ exports.listarDiarios=async(req,res,next)=>
 
 }
 
-
 exports.listarDiariosporId=async(req,res,next)=>
 {
     
@@ -83,7 +79,7 @@ exports.listarDiariosporId=async(req,res,next)=>
         //const diario = await Diario.find({});     console.log('req'+req);
            
 
-    const diario = await Diario.find({usuario:`${req.params.idUsuario}`});
+    const diario = await Diario.find({usuario:`${req.params.idUsuario}`}).sort({fecha:-1});
 
         diario.forEach(prueba=>
             {
@@ -111,6 +107,7 @@ exports.listarDiariosporId=async(req,res,next)=>
 
 
 }
+
 exports.listarDiariosfecha=async(req,res,next)=>
 {
 
@@ -134,8 +131,6 @@ exports.listarDiariosfecha=async(req,res,next)=>
 
 }
 
-
-
 exports.actualizarDiario = async (req, res, next) => {
     try {
         const diario = await Diario.findOneAndUpdate({ _id : req.params.idIng }, req.body, {
@@ -148,7 +143,6 @@ exports.actualizarDiario = async (req, res, next) => {
     }
 }
 
-
 exports.eliminarDiario = async (req, res, next) => {
     try {
         await Diario.findOneAndDelete({_id : req.params.idIng});
@@ -158,7 +152,6 @@ exports.eliminarDiario = async (req, res, next) => {
         next();
     }
 }
-
 
 exports.gastosTotales=function(req,res,next)
 {
@@ -176,7 +169,6 @@ exports.gastosTotales=function(req,res,next)
             if ( err )
               throw err;
         
-            console.log( JSON.stringify( data, undefined, 2 ) );
          
             res.json( data );
           })
@@ -184,33 +176,23 @@ exports.gastosTotales=function(req,res,next)
     //const diario = await Diario.findById({_id});
         
         }  
-
-
         //Ingreso  Por mes 
-exports.gastosTotalesMes=function(req,res,next)
+exports.gastosTotalesMes=async function (req,res,next)
 {
     
     var prueba=mongoose.Types.ObjectId('5ee16faebda38c3fd5df67d0');
     
-        Diario.aggregate([
+     const data=await Diario.aggregate([
             {$match: {"usuario" :prueba }},{$group:{
-           // _id:{ $substr: ['$fecha', 5, 2]},   
-          // "_id":{"$arrayElemAt":[{"$split":["$fecha","-"]},1]},
+           
           "_id": { "$month": { "$toDate": "$fecha" }},
          
            totalAmount: { $sum: "$monto" },
             }
         
-          },{ $sort : {fecha :1} }],function( err, data ) {
+          },{ $sort : {totalAmount :-1} }])
 
-            if ( err )
-              throw err;
-        
-            console.log( JSON.stringify( data, undefined, 2 ) );
-         
-            res.json( data );
-          })
-
+      res.json(data)
     //const diario = await Diario.findById({_id});
         
        
@@ -219,29 +201,25 @@ exports.gastosTotalesMes=function(req,res,next)
 
 }
 
-
-
       //Ingreso  Por Tipo
-      exports.gastosTotalesMes=function(req,res,next)
+exports.gastosTotalesMes=function(req,res,next)
       {
-          console.log("paso por aca");
-          
-          var prueba=mongoose.Types.ObjectId('5ee16faebda38c3fd5df67d0');
+        const _id = req.params.idUsuario
+          var prueba=mongoose.Types.ObjectId(_id);
           
               Diario.aggregate([
                   {$match: {"usuario" :prueba }},{$group:{
-                 // _id:{ $substr: ['$fecha', 5, 2]},   
-                // "_id":{"$arrayElemAt":[{"$split":["$fecha","-"]},1]},
                 "_id": { "$month": { "$toDate": "$fecha" }},
                  totalAmount: { $sum: "$monto" },
                   }
               
-                }],function( err, data ) {
+                },{'$sort': {
+                  '_id': 1
+                }}],function( err, data ) {
       
                   if ( err )
                     throw err;
               
-                  console.log( JSON.stringify( data, undefined, 2 ) );
                
                   res.json( data );
                 })
@@ -252,13 +230,11 @@ exports.gastosTotalesMes=function(req,res,next)
          
       
       
-      }
-   
+      }  
+
 exports.gastoportipo=function(req,res,next)
 {
 
-    console.log("paso por aca");
-    console.log(Tipo.collection.name);
     
     var bd=Tipo.collection.name
     var prueba=mongoose.Types.ObjectId('5ee16faebda38c3fd5df67d0');
@@ -275,10 +251,127 @@ exports.gastoportipo=function(req,res,next)
             if ( err )
               throw err;
         
-            console.log( JSON.stringify( data, undefined, 2 ) );
          
             res.json( data );
           })
+
+
+}
+
+exports.gastoportipoprueba=function(req,res,next)
+{
+
+  const _id = req.params.idUsuario
+  var prueba=mongoose.Types.ObjectId(_id);
+        Diario.aggregate([
+            { "$match" : { "usuario" :prueba,"fecha": {
+                $gte:new Date(moment().startOf('month').format('YYYY-MM-DD')),
+                $lte:new Date(moment().endOf('month').format('YYYY-MM-DD'))}},
+            },
+            {$group:{
+                _id:"$tipo" , 
+                
+                totalAmount: { $sum: "$monto" }  }
+            
+              }
+        ],function( err, data ) {
+            if ( err )
+              throw err;         
+            res.json( data );
+          }).sort({fecha:1})
+
+
+}
+
+exports.listarDiariosporIdydia=async(req,res,next)=>
+{
+    var prueba=mongoose.Types.ObjectId('5ee16faebda38c3fd5df67d0');    
+  const valor= await  Diario.aggregate([
+        [
+            {
+              '$group': {
+                '_id': '$fecha', 
+                'totaldia': {
+                  '$sum': '$monto'
+                }
+              }
+            },{
+              '$sort': {
+                '_id': -1
+              }
+            }
+
+            ,{'$limit':14}
+          ]
+
+    ])
+    res.json(valor)    
+}
+
+exports.listarDiariosporIdydiaperiodo=async(req,res,next)=>
+{
+    const testuno = req.body;
+
+    var prueba=mongoose.Types.ObjectId(testuno.id);
+    
+  const valor= await  Diario.aggregate(
+
+    [
+        {
+          '$match': {
+            'usuario': prueba, 
+            'fecha': {
+              '$gte': new Date(testuno.inicio), 
+              '$lt': new Date(testuno.fin)
+            }
+          }
+        }, {
+          '$group': {
+            '_id': '$fecha', 
+            'totaldia': {
+              '$sum': '$monto'
+            }
+          }
+        }, {
+          '$sort': {
+            '_id': -1
+          }
+        }
+      ]
+  )
+
+    res.json(valor)    
+
+
+
+        
+        
+    
+
+}
+
+exports.gastoportipoperiodo=async function(req,res,next)
+{
+  const testuno = req.body;  
+  var prueba=mongoose.Types.ObjectId(testuno.id);
+  try {
+    const data= await  Diario.aggregate([
+      { "$match" : { "usuario" :prueba,"fecha": {
+          $gte:new Date(testuno.inicio),
+          $lte:new Date(testuno.fin)}},
+      },
+      {$group:{
+          _id:"$tipo" , 
+          totalAmount: { $sum: "$monto" }  }
+        }
+  ])
+ 
+  res.json(data)
+  } catch (error) {
+    console.log(error);
+  }
+  
+  
 
 
 }

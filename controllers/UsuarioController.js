@@ -5,16 +5,9 @@ const bcrypt=require('bcrypt')
 
 
 exports.nuevoUsuario = async (req, res, next) => {
-   
     const diario = new Diario(req.body);
     diario.password=await bcrypt.hash(req.body.password,12)
-
-
-    try {
-
-
-        console.log(diario);
-        
+    try {        
         // almacenar el registro
         await diario.save();
         res.json({ mensaje : 'Se agrego un nuevo registro' });
@@ -26,17 +19,13 @@ exports.nuevoUsuario = async (req, res, next) => {
 }
 
 exports.autenticarUsuario=async(req,res,next)=>{
-    console.log("paso por el Login ");
     
     const {correo,password}=req.body
 console.log(correo);
 try{
- console.log("antes de la consulta a la base de dato ");
     
- console.log("muetsrame el correo "+correo);
  
 const usuario=await Diario.findOne({correo})
-console.log("el usuario"+usuario);
 
 if(!usuario)
 {

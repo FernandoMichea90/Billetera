@@ -1,5 +1,4 @@
 const express=require('express')
-
 const route=require('./routes/index')
 const mongoose=require('mongoose')
 const bodyParser=require('body-parser')
@@ -9,20 +8,18 @@ const app=express ()
 mongoose.Promise=global.Promise;
 mongoose.connect(process.env.DB_URL,
 {
-    useNewUrlParser:true
-
+    useCreateIndex: true,
+    useNewUrlParser: true
 })
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 // definir un dominio para ejecutar peticiones 
 
-console.log("permitido "+process.env.FRONTEND_URL);
 
 const whitelist =[process.env.FRONTEND_URL]
 
 
-console.log("hola munfo "+process.env.FRONTEND_URL);
 
 const corsOption={
     origin:(origin,callBack)=>
@@ -50,16 +47,15 @@ const corsOption={
 app.use(cors(corsOption));
 
 app.use('/',route())
+console.log(process.env.HOST);
 
-const host =process.env.HOST || '0.0.0.0'
+const host =process.env.HOST || 'localhost'
 const port =process.env.PORT || 5000
 app.listen(port,host,()=>
 {
 
-    console.log("El servidor esta funcionando");
     console.log(process.env.DB_URL);
     console.log(process.env.FRONTEND_URL);
-    console.log("base de datos "+process.env.DB_URL);
 
 
 

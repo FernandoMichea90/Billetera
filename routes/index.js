@@ -55,7 +55,14 @@ router.get('/ingresostotales',IngresoController.ingresosTotales)
 router.get('/ingresostotalesmes',IngresoController.ingresoTotalesMes)    
 //Ingreso por tipo
 
-router.get('/ingresosportipo',IngresoController.ingresosportipo)    
+router.get('/ingresosportipo/:idUsuario',IngresoController.ingresosportipo) 
+
+//Ingreso por tipo por periodo  
+
+router.put('/ingresosportipoperiodo',IngresoController.ingresosportipoperiodo) 
+
+//Ingreso por por dia usuario 
+router.get('/ingresospordia/:idUsuario',IngresoController.listarDiariosporIdydia)    
 
 
     //Gasto
@@ -76,13 +83,25 @@ router.get('/gastostotales/',GastoController.gastosTotales)
 
 //Gassto por mes 
 
-router.get('/gastostotalesmes',GastoController.gastosTotalesMes)    
+router.get('/gastostotalesmes/:idUsuario',GastoController.gastosTotalesMes)    
 
 //Ingreso por tipo
 
 router.get('/gastosportipo',GastoController.gastoportipo)    
 
    
+router.get('/gastosportipoprueba/:idUsuario',GastoController.gastoportipoprueba)    
+
+//Gastos por por dia usuario 
+router.get('/gastospordia/:idUsuario',GastoController.listarDiariosporIdydia)    
+
+//Gastos por por dia usuario 
+router.put('/gastospordia',GastoController.listarDiariosporIdydiaperiodo)    
+
+
+router.put('/gastosportipoperiodo',GastoController.gastoportipoperiodo)    
+
+
 
     return router 
 }

@@ -1,5 +1,6 @@
 const Diario = require('../models/Ingreso');
 const Tipo = require('../models/TipoIngresos');
+var moment =require('moment')
 
 var mongoose = require('mongoose')
 
@@ -163,14 +164,17 @@ exports.eliminarDiario = async (req, res, next) => {
 //Ingreso  Por mes 
 exports.ingresosportipo=function(req,res,next)
 {
-    console.log("paso por aca");
-    console.log(Tipo.collection.name);
+
+    var id=req.params.idUsuario
+    console.log("muestrame el id "+id);
     
-    var bd=Tipo.collection.name
-    var prueba=mongoose.Types.ObjectId('5ee16faebda38c3fd5df67d0');
+    var prueba=mongoose.Types.ObjectId(id);
     
-        Diario.aggregate([
-            {"$group" : {"_id":"$tipo", "quantity":{"$sum":"$monto"}}}, 
+        Diario.aggregate([ { "$match" : { "usuario" :prueba,"fecha": {
+            $gte:new Date(moment().startOf('month').format('YYYY-MM-DD')),
+            $lte:new Date(moment().endOf('month').format('YYYY-MM-DD'))}},
+        },
+            {"$group" : {"_id":"$tipo", "totalAmount":{"$sum":"$monto"}}}, 
 
         
         
@@ -258,3 +262,75 @@ exports.ingresosTotales=function(req,res,next)
         }
         
         
+ exports.listarDiariosporIdydia=async(req,res,next)=>
+{
+    var prueba=mongoose.Types.ObjectId('5ee16faebda38c3fd5df67d0');    
+    Diario.aggregate([
+        [
+            {
+              '$group': {
+                '_id': '$fecha', 
+                'totaldia': {
+                  '$sum': '$monto'
+                }
+              }
+            }, {
+              '$sort': {
+                'fecha': -1
+              }
+            }
+          ]
+
+    ],function( err, data ) {
+
+        if ( err )
+          throw err;
+    
+        console.log( JSON.stringify( data, undefined, 2 ) );
+     
+        res.json( data );
+      })
+
+        
+
+
+
+        
+        
+    
+
+}
+
+exports.ingresosportipoperiodo=async function(req,res,next)
+{
+  const testuno = req.body;  
+  var prueba=mongoose.Types.ObjectId(testuno.id);
+
+  console.log("muetrame el state del ingreso");
+  console.log(prueba);
+  console.log(testuno.inicio);
+  console.log(testuno.fin);
+  
+
+  
+  try {
+    const data= await  Diario.aggregate([
+      { "$match" : { "usuario" :prueba,"fecha": {
+          $gte:new Date(testuno.inicio),
+          $lte:new Date(testuno.fin)}},
+      },
+      {$group:{
+          _id:"$tipo" , 
+          totalAmount: { $sum: "$monto" }  }
+        }
+  ])
+ 
+  res.json(data)
+  } catch (error) {
+    console.log(error);
+  }
+  
+  
+
+
+}
