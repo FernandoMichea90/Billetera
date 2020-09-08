@@ -18,9 +18,6 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 
 const whitelist =[process.env.FRONTEND_URL]
-
-
-
 const corsOption={
     origin:(origin,callBack)=>
     {
@@ -55,6 +52,8 @@ app.listen(port,host,()=>
 {
 
     console.log(process.env.DB_URL);
+    console.log("el frontend");
+    
     console.log(process.env.FRONTEND_URL);
 
 
