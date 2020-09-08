@@ -4,7 +4,7 @@
   "description": "billetera",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node ./index.js",
+    "start": "node ./index.js",
     "test": "node ./index.js"
   },
   "author": "Fernando Michea",
