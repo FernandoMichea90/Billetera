@@ -50,9 +50,12 @@ const host =process.env.HOST || 'localhost'
 const port =process.env.PORT || 5000
 app.listen(port,host,()=>
 {
-
+    console.log("EL PUERTO");
+    
+    console.log(port);
+    
     console.log(process.env.DB_URL);
-    console.log("el frontend");
+    console.log("el frontend    ");
     
     console.log(process.env.FRONTEND_URL);
 
