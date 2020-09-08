@@ -46,9 +46,9 @@ app.use(cors(corsOption));
 app.use('/',route())
 console.log(process.env.HOST);
 
-const host =process.env.HOST || 'localhost'
+const host =process.env.HOST || '0.0.0.0'
 const port =process.env.PORT || 5000
-app.listen(port,host,()=>
+app.listen(port,'0.0.0.0',()=>
 {
     console.log("EL PUERTO");
     
